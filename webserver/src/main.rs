@@ -1,7 +1,7 @@
+use std::fs::File;
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
-use std::fs::File;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
@@ -25,20 +25,17 @@ fn handle_connection(mut stream: TcpStream) {
 
     if buffer.starts_with(get) {
         let mut file = File::open("index.html").unwrap();
-
         file.read_to_string(&mut contents).unwrap();
-
-        let response = format!("HTTP/1.1 200 OK\r\n\r\n{}",contents);
+        let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
 
         stream.write(response.as_bytes()).unwrap();
     } else {
-        let contents = String::from("のっとふぁうんど");
-
-        let response = format!("HTTP/1.1 400 Not Found\r\n\r\n{}",contents);
+        let contents = String::from("<html><head><meta charset='UTF-8'/></head><body><H1>のっとふぁうんど</H1></body></html>");
+        let response = format!("HTTP/1.1 400 Not Found\r\n\r\n{}", contents);
 
         stream.write(response.as_bytes()).unwrap();
     }
 
-    stream.flush().unwrap(); 
+    stream.flush().unwrap();
     println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
 }
