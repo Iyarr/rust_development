@@ -6,11 +6,12 @@ use std::thread;
 use std::time::Duration;
 
 fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let listener = TcpListener::bind("0.0.0.0:7878").unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-
+        let peer_addr = stream.peer_addr().unwrap();
+        println!("Connection from: {}", peer_addr); // クライアントのIPを表示
         handle_connection(stream);
         // 接続が確立しました
         println!("Connection established!");
